@@ -1,0 +1,16 @@
+3ddcaa0af6f3ad6683ed58f43dcef03f *DESCRIPTION
+a89386216eeaeffd52e4ac8bfdf64e2e *LICENSE
+28e8ddfe7e466b4aea04e8349db54b2b *NAMESPACE
+44c2389c311353b69481795d2cce901c *NEWS.md
+4866b0627e0354aa84b453dcdd707d83 *R/ARS_example.R
+1dc626f41f3cfc674bfe9a6a597b643e *R/globals.R
+ffb38275292c59f4619ad1b16796f4cb *R/readARS.R
+cf794928715019cf81bd51d467156178 *R/utils-pipe.R
+6b834224d19de5c37b9f23b040ec6c2f *README.md
+754e98190423bc9ba77ef8a99462bba0 *inst/extdata/ADAE.csv
+fa8354e789bf4a49b811d43d07bc6b70 *inst/extdata/ADSL.csv
+2ddac45ed590acb5dbdb27e3356f2cdc *inst/extdata/ARS_V1_Common_Safety_Displays.json
+a3a25f2be5e10d6a8f98105ead26665c *man/ARS_example.Rd
+502a5f8dd6ba90060101596366cb7d58 *man/figures/README-pressure-1.png
+681b2124446446b6b045b496fe131ecf *man/pipe.Rd
+e8bd5a0d8c0f745fade24a8340398bf0 *man/readARS.Rd
