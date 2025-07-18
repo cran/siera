@@ -43,11 +43,12 @@ library(readr)
 
   code_libraries <- func_libraries()
 
-  # Read in ARS JSON content ----------------------------------------------------
+  # Read in ARS (JSON) content ----------------------------------------------------
   json_from <- jsonlite::fromJSON(JSON_ARS)
 
   #otherListsOfContents (LOPO) --V1ized
   otherListsOfContents <- json_from$otherListsOfContents$contentsList$listItems[[1]]  # this is similar to xlsx
+  Lopo <- otherListsOfContents # list of all planned outputs to loop JSONized
 
   #listOfPlannedAnalyses --V1ized
   mainListOfContents <- json_from$mainListOfContents$contentsList$listItems
@@ -339,13 +340,8 @@ library(readr)
           by = "operation_id",
           all = TRUE)
 
-  # AnalysisMethods <- read_excel("ARSFILE.xlsx",
-  #                               sheet = 'AnalysisMethods')
-
   # Prework and loops ----------------------------------------------------
 
-  #Init work
-  Lopo <- otherListsOfContents # list of all planned outputs to loop JSONized
 
   # for (i in 1:1) {            # loop through outputs
   for (i in 1:nrow(Lopo)) {
@@ -377,7 +373,9 @@ library(readr)
       a1 <- paste0(a1, ad, " <- read_csv(\'", ad_path, "\')\n")  # Append each line
     }
     a1 <- gsub("adampathhere", adam_path, a1, fixed = TRUE)
-    code_ADaM <- unique(paste("\n# Load ADaM -------\n", a1, sep = ""))
+    code_ADaM_1 <- unique(paste(a1, sep = ""))
+    code_ADaM <- paste0("\n# Load ADaM -------\n",
+                        paste(code_ADaM_1, collapse = "\n"))
 
 
     run_code <- ""    # variable to contain generated code
@@ -489,38 +487,50 @@ df_analysisidhere <- dplyr::filter(ADaM,
                                                                     anSetName))
 
       }
-      else {
+      else { # if analysis set ADaM and Analysis ADaMs are different
 
-        func_AnalysisSet2 <- function(dataset, variable, oper, val, ASID, anaADaM, anSetName) {
-          template <- "
+          # variable used in Analysis
+
+          func_AnalysisSet2 <- function(dataset,
+                                        variable,
+                                        oper,
+                                        val,
+                                       # anavar,
+                                        ASID,
+                                        anaADaM,
+                                        anSetName) {
+            template <- "
 # Apply Analysis Set ---
 # Analysis set :  Analysissetnamehere
 df_analysisidhere <- dplyr::filter(ADaM,
             var operator 'value') %>%
-            dplyr::select(USUBJID) %>%
+            #dplyr::select(anasetvrhere) %>%
             merge(analysisADAMhere,
-                  by = 'USUBJID')
-
+                  by = 'USUBJID',
+                  all = FALSE)
 "
-          code <- gsub('ADaM', dataset, template)
-          code <- gsub('var', variable, code)
-          code <- gsub('operator', oper, code)
-          code <- gsub('value', val, code)
-          code <- gsub('analysisidhere', ASID, code)
-          code <- gsub('analysisADAMhere', anaADaM, code)
-          code <- gsub('Analysissetnamehere', anSetName, code)
+            code <- gsub('ADaM', dataset, template)
+            code <- gsub('var', variable, code)
+            code <- gsub('operator', oper, code)
+            code <- gsub('value', val, code)
+            #code <- gsub('anasetvrhere', anavar, code)
+            code <- gsub('analysisidhere', ASID, code)
+            code <- gsub('analysisADAMhere', anaADaM, code)
+            code <- gsub('Analysissetnamehere', anSetName, code)
 
-          return(code)
+            return(code)
+          }
+
+          assign(paste0("code_AnalysisSet_",Anas_j),
+                 func_AnalysisSet2(cond_adam,
+                                   cond_var,
+                                   oper,
+                                   cond_val,
+                                   #ana_var,
+                                   Anas_j,
+                                   ana_adam,
+                                   anSetName))
         }
-
-        assign(paste0("code_AnalysisSet_",Anas_j), func_AnalysisSet2(cond_adam,
-                                                                    cond_var,
-                                                                    oper,
-                                                                    cond_val,
-                                                                    Anas_j,
-                                                                    ana_adam,
-                                                                    anSetName))
-      }
 
 
       # Apply Grouping ----------------------------------------------------------------
@@ -871,7 +881,7 @@ df2_analysisidhere <- df1_analysisidhere
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = n()) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -916,7 +926,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = n()) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -963,7 +973,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = mean(ana_varhere)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1014,7 +1024,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = sd(ana_varhere)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1064,7 +1074,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = median(ana_varhere)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1112,7 +1122,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = quantile(ana_varhere, c(.25), na.rm = TRUE)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1160,7 +1170,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = quantile(ana_varhere, c(.75), na.rm = TRUE)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1208,7 +1218,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = min(ana_varhere)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1258,7 +1268,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = max(ana_varhere)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1308,7 +1318,7 @@ df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
 
 df3_analysisidhere_operationidhere <- df2_analysisidhere %>%
         dplyr::summarise(res = n_distinct(ana_varhere)) %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OperationId = 'operationidhere',
                OutputId = 'outputidhere',
@@ -1446,7 +1456,7 @@ p <- stats::pf(f[1],f[2],f[3],lower.tail=F)
 attributes(p) <- NULL
 
 df3_analysisidhere_operationidhere <- data.frame(res = p,
-                  AnalsysisId = 'analysisidhere',
+                  AnalysisId = 'analysisidhere',
                   MethodId = 'methodidhere',
                   OperationId = 'operationidhere',
                   OutputId = 'outputidhere',
@@ -1500,7 +1510,7 @@ tab <- table(adamhere[, c('ana_groupvar1here', 'ana_groupvar2here')])
 p <- chisq.test(tab)$p.value
 
 df3_analysisidhere_operationidhere <- data.frame(res = p,
-                  AnalsysisId = 'analysisidhere',
+                  AnalysisId = 'analysisidhere',
                   MethodId = 'methodidhere',
                   OperationId = 'operationidhere',
                   OutputId = 'outputidhere',
