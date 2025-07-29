@@ -1,11 +1,34 @@
-## ----setup, include = FALSE---------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----library, warning=FALSE---------------------------------------------------
+## ----setup--------------------------------------------------------------------
 library(siera)
+
+## ----example files------------------------------------------------------------
+# To see a list of example files:
+ARS_example()
+
+# A temporary path to a specific file:
+ARS_example("ARS_V1_Common_Safety_Displays.json")
+
+## ----example, message=FALSE---------------------------------------------------
+# Path to the the ARS JSON File. 
+json_path <- ARS_example("ARS_V1_Common_Safety_Displays.json")
+
+# Path to a folder which will contain the meta-programmed R scripts (feel free to update 
+# to a more suitable path)
+output_folder <- tempdir()
+
+# this folder contains ADaM datasets to produce ARD (we will use temporary 
+# directory tempdir(), but feel free to download the ADaMs required and use the location they are stored in.
+# This can be done with e.g. dirname(ARS_example("ADSL.csv"))
+ADaM_folder <- tempdir()
+
+# run the readARS function with these 3 parameters.  This creates R scripts (1 for each output in output_folder)
+readARS(json_path, output_folder, ADaM_folder, example = TRUE)
 
 ## ----cards example, eval=FALSE------------------------------------------------
 # # example of 'cards' code in AnalysisMethodCodeTemplate, using the ard_continuous function:
@@ -37,10 +60,7 @@ ADaM_folder <- tempdir()
 
 # run the readARS function with these 3 parameters.  This creates R scripts 
 # (1 for each Output in output_folder)
-readARS_xl(ARS_path, output_folder, ADaM_folder)
-
-## ----install show-------------------------------------------------------------
-
+readARS(ARS_path, output_folder, ADaM_folder)
 
 ## ----run ARD_xxx, message=FALSE, warning=FALSE, eval=FALSE--------------------
 # 
