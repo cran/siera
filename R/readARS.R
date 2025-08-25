@@ -15,6 +15,8 @@
 #' @param example Default is FALSE.  If TRUE, example-based operations will
 #'  be applied to CDISC example ARS. If FALSE, AnalysisMethodCodeTemplateCode
 #'  will be expected as source of the Method (and Operations) code
+#' @param shuffle Default is FALSE.  If TRUE, shuffle_ard() is applied to the
+#'  binded final ARD, to prepare for the tfrmt use case of table generation
 #'
 #' @importFrom readxl read_excel
 #'
@@ -33,15 +35,16 @@
 #' adam_folder = tempdir()
 #'
 #' # run function, write to temp directory
-#' readARS_xl(ARS_path, output_dir, adam_folder)
+#' readARS(ARS_path, output_dir, adam_folder)
 #'
 
 readARS <- function(ARS_path,
-                       output_path = tempdir(),
-                       adam_path = tempdir(),
-                       spec_output = "",
-                       spec_analysis = "",
-                       example = FALSE){
+                     output_path = tempdir(),
+                     adam_path = tempdir(),
+                     spec_output = "",
+                     spec_analysis = "",
+                     example = FALSE,
+                     shuffle = FALSE){
 
   func_libraries <- function(){
 
@@ -585,14 +588,27 @@ library(readr)
         oper <-  '=='
       } else if(cond_oper == "NE"){
         oper = '!='
+      } else if(cond_oper == "GE"){
+        oper = '>='
+      } else if(cond_oper == "GT"){
+        oper = '>'
+      } else if(cond_oper == "LE"){
+        oper = '<='
+      } else if(cond_oper == "LT"){
+        oper = '<'
       }
+
 
       if(is.na(cond_val)){
         cond_val = ""
+      } else{
+        if(!is.numeric(cond_val)){
+          cond_val = paste0("'",cond_val,"'")
+        }
       }
 
       # code for conditional statement for anSet
-      anset_cond_stm = paste0(cond_var, oper,"'",cond_val,"'")
+      anset_cond_stm = paste0(cond_var, oper,cond_val)
 
       if(cond_adam == ana_adam){    # if Analysis Set ADaM and Analysis ADaM are same
 
@@ -1227,7 +1243,7 @@ df2_analysisidhere <- df1_analysisidhere
         # Code
         anmetcode <- AnalysisMethodCodeTemplate %>%
           dplyr::filter(method_id == methodid,
-                        context == "R",
+                        context %in% c("R", "R (siera)", "siera"),
                         specifiedAs == "Code") %>%
           dplyr::select(templateCode)
 
@@ -1308,11 +1324,11 @@ df2_analysisidhere <- df1_analysisidhere
           "
 if(nrow(df2_analysisidhere) != 0){
 df3_analysisidhere <- df3_analysisidhere %>%
-        dplyr::mutate(AnalsysisId = 'analysisidhere',
+        dplyr::mutate(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OutputId = 'outputidhere')
 } else {
-    df3_analysisidhere = data.frame(AnalsysisId = 'analysisidhere',
+    df3_analysisidhere = data.frame(AnalysisId = 'analysisidhere',
                MethodId = 'methodidhere',
                OutputId = 'outputidhere')
 }
@@ -2223,18 +2239,34 @@ df3_analysisidhere_operationidhere <- data.frame(res = p,
   # add all code, combine analyses ARDs and apply pattern
   if(example == FALSE){
 
-    assign(paste0("code_",Output),
-           paste0(code_header,
-                  code_libraries,
-                  code_ADaM,
-                  run_code,
-                  "\n\n# combine analyses to create ARD ----\n",
-                  "ARD <- dplyr::bind_rows(",
-                  combine_analysis_code,
-                  ")\n\n #Apply pattern format:\n"#,
-                  #code_pattern
-           )
-    )
+    if(shuffle == FALSE){
+      assign(paste0("code_",Output),
+             paste0(code_header,
+                    code_libraries,
+                    code_ADaM,
+                    run_code,
+                    "\n\n# combine analyses to create ARD ----\n",
+                    "ARD <- cards::bind_ard(",
+                    combine_analysis_code,
+                    ") %>%\n #Apply pattern format:\n"#,
+                    #code_pattern
+             )
+      )
+    } else {
+      assign(paste0("code_",Output),
+             paste0(code_header,
+                    code_libraries,
+                    code_ADaM,
+                    run_code,
+                    "\n\n# combine analyses to create ARD ----\n",
+                    "ARD <- cards::bind_ard(",
+                    combine_analysis_code,
+                    ") %>%\n shuffle_ard() \n #Apply pattern format:\n"#,
+                    #code_pattern
+             )
+      )
+    }
+
   } else {
 
     assign(paste0("code_",Output),
@@ -2249,12 +2281,9 @@ df3_analysisidhere_operationidhere <- data.frame(res = p,
                   code_pattern
            )
     )
-
   }
 
   writeLines(get(paste0("code_",Output)),
              paste0(output_path,"/ARD_",Output,".R"))
-
-
   } # end of outputs
 }

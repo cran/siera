@@ -1,3 +1,8 @@
+# siera 0.5.2
+
+# siera 0.5.1
+* Added conditional operators to cover EQ, NE, GE, GT, LE, LT
+
 # siera 0.5.0
 
 * readARS function to ingest xlsx, json and CDISC example
