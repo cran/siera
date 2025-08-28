@@ -1,6 +1,10 @@
+# siera 0.5.3
+
+* Cover scenario of multi-value DataSubsets
+* Cover scenario of overlapping variables in ADSL merge
+
 # siera 0.5.2
 
-# siera 0.5.1
 * Added conditional operators to cover EQ, NE, GE, GT, LE, LT
 
 # siera 0.5.0

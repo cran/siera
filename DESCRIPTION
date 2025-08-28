@@ -1,7 +1,7 @@
 Package: siera
 Type: Package
 Title: Generate Analysis Results Programmes Using ARS Metadata
-Version: 0.5.2
+Version: 0.5.3
 Authors@R: c(
     person("Malan", "Bosman", email = "malanbos@gmail.com", role = c("aut", "cre")),
     person("Clymb Clinical", role = c("cph", "fnd")))
@@ -23,8 +23,8 @@ URL: https://clymbclinical.github.io/siera/,
 BugReports: https://github.com/clymbclinical/siera/issues
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-08-25 11:57:45 UTC; mbosm
+Packaged: 2025-08-28 10:17:14 UTC; mbosm
 Author: Malan Bosman [aut, cre],
   Clymb Clinical [cph, fnd]
 Repository: CRAN
-Date/Publication: 2025-08-25 15:10:02 UTC
+Date/Publication: 2025-08-28 22:40:02 UTC
