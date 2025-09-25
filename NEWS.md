@@ -1,3 +1,9 @@
+# siera 0.5.4
+
+* Comprehensive testing added: checking generated ARD result values
+* added warning messages with cli()
+* cover scenarios for bigN vs table-level subsetting
+
 # siera 0.5.3
 
 * Cover scenario of multi-value DataSubsets

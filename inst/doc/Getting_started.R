@@ -4,7 +4,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----setup--------------------------------------------------------------------
+## ----setup, warning=FALSE-----------------------------------------------------
 library(siera)
 
 ## ----example files------------------------------------------------------------
@@ -12,35 +12,7 @@ library(siera)
 ARS_example()
 
 # A temporary path to a specific file:
-ARS_example("ARS_V1_Common_Safety_Displays.json")
-
-## ----example, message=FALSE---------------------------------------------------
-# Path to the the ARS JSON File. 
-json_path <- ARS_example("ARS_V1_Common_Safety_Displays.json")
-
-# Path to a folder which will contain the meta-programmed R scripts (feel free to update 
-# to a more suitable path)
-output_folder <- tempdir()
-
-# this folder contains ADaM datasets to produce ARD (we will use temporary 
-# directory tempdir(), but feel free to download the ADaMs required and use the location they are stored in.
-# This can be done with e.g. dirname(ARS_example("ADSL.csv"))
-ADaM_folder <- tempdir()
-
-# run the readARS function with these 3 parameters.  This creates R scripts (1 for each output in output_folder)
-readARS(json_path, output_folder, ADaM_folder, example = TRUE)
-
-## ----cards example, eval=FALSE------------------------------------------------
-# # example of 'cards' code in AnalysisMethodCodeTemplate, using the ard_continuous function:
-# 
-# Analysis_ARD = ard_continuous(
-#   data = filtered_ADSL,
-#   by = c(byvariables_here),
-#   variables = analysisvariable_here
-# )
-
-## ----cardsconstructs, eval=FALSE----------------------------------------------
-# ARS_example("cards_constructs.xlsx")
+ARS_example("exampleARS_1.json")
 
 ## ----Excel ARS metadata example, message=FALSE--------------------------------
 
@@ -62,17 +34,15 @@ ADaM_folder <- tempdir()
 # (1 for each Output in output_folder)
 readARS(ARS_path, output_folder, ADaM_folder)
 
-## ----run ARD_xxx, message=FALSE, warning=FALSE, eval=FALSE--------------------
-# 
-# # Step 1: open ARD_xxx.R file
-# # Step 2: Confirm the location of ADaM dataset(s) is correct in the code section "Load ADaM".
-# # For the sake of simplicity, the only update made to the ARD_Out14-1-1.R
-# # script was to point to the ADaM folder to ARS_example("ADSL.csv")
-# # Step 3: Run the code and enjoy automated analysis results generation.
-# # Note: the ARD is contained in the object "df4" (which contains the appended)
-# # mini-ARDs from all individual Analyses ARDs.
-# 
-# example_ARD_script = ARD_script_example("ARD_Out14-1-1.R")
-# source(example_ARD_script)
-# head(df4)
+## ----run ARD_xxx, message=FALSE, warning=FALSE, eval=TRUE---------------------
+
+# Step 1: open ARD_xxx.R file
+# Step 2: Confirm the location of ADaM dataset(s) is correct in the code section "Load ADaM".  
+# For the sake of simplicity, the only update made to the ARD_Out14-1-1.R script was to point to the ADaM folder to ARS_example("ADSL.csv")
+# Step 3: Run the code and enjoy automated analysis results generation. 
+# Note: the ARD is contained in the object "ARD" (which contains the appended) mini-ARDs from all individual Analyses ARDs.
+
+example_ARD_script = ARD_script_example("ARD_Out14-1-1.R")
+source(example_ARD_script)
+head(ARD)
 

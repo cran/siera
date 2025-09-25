@@ -1,7 +1,7 @@
 Package: siera
 Type: Package
 Title: Generate Analysis Results Programmes Using ARS Metadata
-Version: 0.5.3
+Version: 0.5.4
 Authors@R: c(
     person("Malan", "Bosman", email = "malanbos@gmail.com", role = c("aut", "cre")),
     person("Clymb Clinical", role = c("cph", "fnd")))
@@ -15,16 +15,18 @@ Description: Analysis Results Standard (ARS), a foundational standard by CDISC
 License: MIT + file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.3.2
+Depends: R (>= 4.1)
 Imports: magrittr, dplyr, tibble, tidyr, jsonlite, stringr, readxl, cli
-Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0), withr, readr, cards,
+        cardx, broom, parameters, broom.helpers, covr
 VignetteBuilder: knitr
 URL: https://clymbclinical.github.io/siera/,
         https://github.com/clymbclinical/siera
 BugReports: https://github.com/clymbclinical/siera/issues
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-08-28 10:17:14 UTC; mbosm
+Packaged: 2025-09-25 11:55:30 UTC; mbosm
 Author: Malan Bosman [aut, cre],
   Clymb Clinical [cph, fnd]
 Repository: CRAN
-Date/Publication: 2025-08-28 22:40:02 UTC
+Date/Publication: 2025-09-25 12:10:02 UTC

@@ -45,10 +45,6 @@ in Dataset format (ARDs).
 
 ``` r
 install.packages("siera")
-#> package 'siera' successfully unpacked and MD5 sums checked
-#> 
-#> The downloaded binary packages are in
-#>  C:\Users\mbosm\AppData\Local\Temp\RtmpURNf19\downloaded_packages
 ```
 
 The development version can be installed from
@@ -64,7 +60,7 @@ The `siera` package has one main function, called `readARS`. This
 function takes ARS metadata as input (either JSON or xlsx format), and
 makes use of the various metadata pieces to populate R scripts, which an
 be run as-is to produce ARDs. One R script is created for each output
-(table) as defined in the ARS metadata for the reportingg event.
+(table) as defined in the ARS metadata for the reporting event.
 
 In order to make use of this function, the following are required as
 arguments:
@@ -82,5 +78,4 @@ vignette for examples and more detail on the process.
 ### More info:
 
 - [US Connect 2025
-  Paper](https://www.lexjansen.com/phuse-us/2025/os/PAP_OS20.pdf)
-- [Clymb website - siera](https://clymbclinical.com/siera/)
+  paper](https://www.lexjansen.com/phuse-us/2025/os/PAP_OS20.pdf)
